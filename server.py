@@ -6,52 +6,53 @@ from fuzzy import Fuzzy
 import os
 
 app = Flask(__name__)
-
-# Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@localhost:5432/db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
-db = SQLAlchemy(app)
+list = []
 
 # Define a model
-class Paciente(db.Model):
-    __tablename__ = 'pacientes'
+class Paciente:
 
-    id                              = db.Column(db.Integer, primary_key=True)
-    aspecto_pele                    = db.Column(db.String(255))
-    aspecto_unha                    = db.Column(db.String(255))
-    bordas                          = db.Column(db.String(255))
-    claudicacao                     = db.Column(db.Boolean)                 
-    comorbidade                     = db.Column(ARRAY(db.Integer))            
-    dor                             = db.Column(db.String(255))
-    dor_em_elevacao                 = db.Column(db.String(255))
-    edema                           = db.Column(db.Integer)                  
-    enchimento_capilar              = db.Column(db.String(255))
-    exsudato                        = db.Column(db.Integer)
-    exsudato_volume                 = db.Column(db.String(255))
-    idade                           = db.Column(db.Integer)                  
-    itb                             = db.Column(db.Float)
-    localizacao                     = db.Column(db.String(255))                  
-    condicoes_clinicas_associadas   = db.Column(ARRAY(db.Integer))
-    doppler                         = db.Column(ARRAY(db.Integer))                      
-    estilo_de_vida                  = db.Column(ARRAY(db.Integer))               
-    etnia                           = db.Column(ARRAY(db.Integer))                        
-    pilificacao                     = db.Column(db.String(255))                  
-    profundidade                    = db.Column(db.String(255))                 
-    pulso                           = db.Column(db.String(255))
-    risco                           = db.Column(db.Float)                        
-    risco_alto_arterial             = db.Column(db.Float)       
-    risco_alto_venoso               = db.Column(db.Float)            
-    risco_baixo_arterial            = db.Column(db.Float)        
-    risco_baixo_venoso              = db.Column(db.Float)          
-    risco_moderado_arterial         = db.Column(db.Float)     
-    risco_moderado_venoso           = db.Column(db.Float)        
-    sexo                            = db.Column(db.String(255))                         
-    tamanho_lesao                   = db.Column(db.Float)                
-    tempertura                      = db.Column(db.String(255))                   
-    tipo                            = db.Column(db.String(255))
-    venosa                          = db.Column(db.Float)
-    arterial                        = db.Column(db.Float)                         
+    def __init__(self,
+    aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor, dor_em_elevacao, edema,
+    enchimento_capilar, exsudato, exsudato_volume, idade, itb, localizacao, condicoes_clinicas_associadas,
+    doppler, estilo_de_vida, etnia, pilificacao, profundidade, pulso, risco_alto_arterial,
+    risco_alto_venoso, risco_baixo_arterial, risco_baixo_venoso, risco_moderado_arterial,
+    risco_moderado_venoso, sexo, tamanho_lesao, tempertura, tipo, venosa, arterial):
+        id_count = len(list) + 1
+
+        self.id                              = id_count                          
+        self.aspecto_pele                    = aspecto_pele                 
+        self.aspecto_unha                    = aspecto_unha                 
+        self.bordas                          = bordas                       
+        self.claudicacao                     = claudicacao                               
+        self.comorbidade                     = comorbidade                          
+        self.dor                             = dor                          
+        self.dor_em_elevacao                 = dor_em_elevacao              
+        self.edema                           = edema                                      
+        self.enchimento_capilar              = enchimento_capilar           
+        self.exsudato                        = exsudato                     
+        self.exsudato_volume                 = exsudato_volume              
+        self.idade                           = idade                                      
+        self.itb                             = itb                          
+        self.localizacao                     = localizacao                                    
+        self.condicoes_clinicas_associadas   = condicoes_clinicas_associadas
+        self.doppler                         = doppler                                         
+        self.estilo_de_vida                  = estilo_de_vida               
+        self.etnia                           = etnia                                              
+        self.pilificacao                     = pilificacao                                    
+        self.profundidade                    = profundidade                                  
+        self.pulso                           = pulso                        
+        self.risco_alto_arterial             = risco_alto_arterial           
+        self.risco_alto_venoso               = risco_alto_venoso                  
+        self.risco_baixo_arterial            = risco_baixo_arterial           
+        self.risco_baixo_venoso              = risco_baixo_venoso               
+        self.risco_moderado_arterial         = risco_moderado_arterial      
+        self.risco_moderado_venoso           = risco_moderado_venoso          
+        self.sexo                            = sexo                                                  
+        self.tamanho_lesao                   = tamanho_lesao                          
+        self.tempertura                      = tempertura                                      
+        self.tipo                            = tipo                         
+        self.venosa                          = venosa                       
+        self.arterial                        = arterial                                        
 
     def __repr__(self):
         return f"<Paciente {self.id}>"
@@ -145,29 +146,30 @@ def create_item():
         risco_moderado_arterial=round(riscos["risco_moderado_arterial"], 3),
         risco_moderado_venoso=round(riscos["risco_moderado_venoso"], 3) 
     )
-    db.session.add(new_paciente)
-    db.session.commit()
+    list.append(new_paciente)
     return jsonify(new_paciente.to_dict()), 201
 
 # Read all items
 @app.route('/pacientes', methods=['GET'])
 def get_items():
-    items = Paciente.query.all()
-    return jsonify([item.to_dict() for item in items])
+    return jsonify([item.to_dict() for item in list])
 
 # Read a single item
 @app.route('/pacientes/<int:item_id>', methods=['GET'])
 def get_item(item_id):
-    item = Paciente.query.get_or_404(item_id)
+    itens_found = [p for p in list if p.id == item_id] 
+    if len(itens_found) == 0:
+        return "paciente inexistente", 404
+    item = itens_found.pop(0)
     return jsonify(item.to_dict())
 
 # Delete an item
 @app.route('/pacientes/<int:item_id>', methods=['DELETE'])
 def delete_item(item_id):
-    item = Paciente.query.get_or_404(item_id)
-    db.session.delete(item)
-    db.session.commit()
-    return '', 204
+    for p in list:
+        if p.id == item_id:
+            list.remove(p)
+    return 'Paciente removido', 200
 
 if __name__ == '__main__':
     app.run(debug=True)
