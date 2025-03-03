@@ -149,6 +149,11 @@ def create_item():
     db.session.commit()
     return jsonify(new_paciente.to_dict()), 201
 
+@app.route('/discovery', methods=['POST'])
+def discovery_json():
+    print(request.get_json())
+    return request.get_json(), 200
+
 # Read all items
 @app.route('/pacientes', methods=['GET'])
 def get_items():
