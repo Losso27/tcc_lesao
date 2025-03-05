@@ -300,11 +300,11 @@ class Decisao:
             riscos["risco_alto_arterial"] += 0.05
             riscos["risco_alto_venoso"] += 0.025
         
-        if sexo == "masculino":
+        if sexo == "Masculino":
             riscos["risco_baixo_venoso"] += 0.025
             riscos["risco_moderado_arterial"] += 0.025
 
-        if sexo == "feminino":
+        if sexo == "Feminino":
             riscos["risco_baixo_arterial"] += 0.025
             riscos["risco_alto_venoso"] += 0.025
 
