@@ -4,6 +4,7 @@ from sqlalchemy.dialects.postgresql import ARRAY
 from decisao import Decisao
 from fuzzy import Fuzzy
 import os
+import utils
 
 app = Flask(__name__)
 
@@ -78,26 +79,26 @@ def create_item():
     aspecto_pele = data["aspecto_pele"]                 
     aspecto_unha = data["aspecto_unha"]                
     bordas = data["bordas"]                      
-    claudicacao = data["claudicacao"]                  
+    claudicacao = utils.convert_string_to_boolean(data["claudicacao"])                  
+    condicoes_clinicas_associadas = data["condicoes_clinicas_associadas"]
     comorbidade = data["comorbidade"]                  
-    dor = data["dor"]                          
-    dor_em_elevacao = data['dor_em_elevacao']              
+    doppler = data["doppler"]                     
+    dor = utils.convert_string_to_float(data["dor"])                          
+    dor_em_elevacao = utils.convert_string_to_boolean(data['dor_em_elevacao'])              
     edema = data["edema"]                        
+    estilo_de_vida = data ["estilo_de_vida"]               
+    etnia = data["etnia"]                       
     enchimento_capilar = data["enchimento_capilar"]           
     exsudato = data["exsudato"]                     
     exsudato_volume = data["exsudato_volume"]             
-    idade = data["idade"]
-    itb = data["itb"]                          
-    localizacao = data["localizacao"]              
-    condicoes_clinicas_associadas = data["condicoes_clinicas_associadas"]
-    doppler = data["doppler"]                     
-    estilo_de_vida = data ["estilo_de_vida"]               
-    etnia = data["etnia"]                       
+    idade = utils.convert_string_to_age(data["data_nascimento"])
+    itb = utils.convert_string_to_float(data["itb"])                     
+    localizacao = data["localizacao"].split(", ")              
     pilificacao = data["pilificacao"]                  
     profundidade = data ["profundidade"]                
     pulso = data["pulso"]                                
     sexo = data["sexo"]                        
-    tamanho_lesao = data ["tamanho_lesao"]                
+    tamanho_lesao = utils.convert_string_to_float(data["tamanho_lesao"])               
     tempertura = data["temperatura"]                  
     
     dor = Fuzzy.avalia_dor(dor)
@@ -116,6 +117,7 @@ def create_item():
         bordas = bordas,
         claudicacao = claudicacao,
         comorbidade = comorbidade,
+        condicoes_clinicas_associadas = condicoes_clinicas_associadas,
         dor=dor,
         dor_em_elevacao = dor_em_elevacao,
         edema=edema,
@@ -124,7 +126,6 @@ def create_item():
         exsudato_volume=exsudato_volume,
         idade=idade,
         itb = itb,
-        condicoes_clinicas_associadas = condicoes_clinicas_associadas,
         doppler = doppler,
         estilo_de_vida = estilo_de_vida,
         etnia = etnia,
@@ -151,7 +152,7 @@ def create_item():
 
 @app.route('/discovery', methods=['POST'])
 def discovery_json():
-    print(request.get_json())
+    print(request.data)
     return request.get_json(), 200
 
 # Read all items

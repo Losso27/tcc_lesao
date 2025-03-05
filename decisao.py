@@ -30,21 +30,21 @@ class Decisao:
         if pilificacao == "escassa":
             avaliacao["arterial"] += 0.035 
 
-        if localizacao == "face anterior da perna":
+        if "face anterior da perna" in localizacao:
             avaliacao["arterial"] += 0.02
             avaliacao["venosa"] += 0.08
-        if localizacao == "dorso do pe":
+        if "dorso do pe" in localizacao:
             avaliacao["arterial"] += 0.1
-        if localizacao == "face medial da perna":
+        if "face medial da perna" in localizacao:
             avaliacao["arterial"] += 0.02
             avaliacao["venosa"] += 0.08
-        if localizacao == "face lateral da perna":
+        if "face lateral da perna" in localizacao:
             avaliacao["arterial"] += 0.02
             avaliacao["venosa"] += 0.08
-        if localizacao == "maleolos":
+        if "maleolos" in localizacao:
             avaliacao["arterial"] += 0.06
             avaliacao["venosa"] += 0.04
-        if localizacao == "regiao tendao calcaneo":
+        if "regiao tendao calcaneo" in localizacao:
             avaliacao["venosa"] += 0.1
 
         if avaliacao["arterial"] > avaliacao["venosa"]:
@@ -175,15 +175,15 @@ class Decisao:
             riscos["risco_alto_venoso"] += 0.07
             riscos["risco_alto_arterial"] += 0.0583
 
-        if edema == 1:
+        if edema == "Grau I":
             riscos["risco_baixo_venoso"] += 0.05
             riscos["risco_baixo_arterial"] += 0.125
 
-        if edema == 2:
+        if edema == "Grau II":
             riscos["risco_moderado_venoso"] += 0.0834
             riscos["risco_moderado_arterial"] += 0.0357
 
-        if edema == 3 or edema == 4:
+        if edema == "Grau III" or edema == "Grau IV":
             riscos["risco_alto_venoso"] += 0.125
             riscos["risco_moderado_arterial"] += 0.0357
 

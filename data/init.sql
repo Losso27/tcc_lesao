@@ -10,7 +10,7 @@ create table pacientes
     comorbidade                     integer[],
     dor                             varchar(255),
     dor_em_elevacao                 varchar(255),
-    edema                           integer,
+    edema                           varchar(255),
     enchimento_capilar              varchar(255),
     exsudato                        integer,
     exsudato_volume                 varchar(255),
