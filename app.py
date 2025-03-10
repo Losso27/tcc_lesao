@@ -58,17 +58,41 @@ class Paciente(db.Model):
         return f"<Paciente {self.id}>"
 
     def to_dict(self):
+        tipo = ""
+        risco = ""
+        probabilidade = 0.0
+        probabilidade_risco = 0.0
+        if self.tipo == "venosa":
+            tipo = "Venosa"
+            probabilidade = self.venosa
+            if self.risco_alto_venoso > 0:
+                risco = "Alto"
+                probabilidade_risco = self.risco_alto_venoso
+            elif self.risco_moderado_venoso > 0:
+                risco = "Moderado"
+                probabilidade_risco = self.risco_moderado_venoso
+            elif self.risco_baixo_venoso > 0:
+                risco = "Baixo"
+                probabilidade_risco = self.risco_baixo_venoso
+        if self.tipo == "arterial":
+            tipo = "Arterial"
+            probabilidade = self.arterial
+            if self.risco_alto_arterial > 0:
+                risco = "Alto"
+                probabilidade_risco = self.risco_alto_arterial
+            elif self.risco_moderado_arterial > 0:
+                risco = "Moderado"
+                probabilidade_risco = self.risco_moderado_arterial
+            elif self.risco_baixo_arterial > 0:
+                risco = "Baixo"
+                probabilidade_risco = self.risco_baixo_arterial
+
         return {
             'id': self.id,
-            'venosa' : self.venosa,
-            'arterial' : self.arterial,
-            'tipo': self.tipo,
-            'risco_alto_arterial': self.risco_alto_arterial,
-            'risco_alto_venoso':self.risco_alto_venoso,
-            'risco_moderado_arterial':self.risco_moderado_arterial,
-            'risco_moderado_venoso':self.risco_moderado_venoso,
-            'risco_baixo_arterial':self.risco_baixo_arterial,
-            'risco_baixo_venoso':self.risco_baixo_venoso
+            'tipo': tipo,
+            'probabilidade': probabilidade,
+            'probabilidade_risco': probabilidade_risco,
+            'risco': risco
         }
 
 # Create an item
