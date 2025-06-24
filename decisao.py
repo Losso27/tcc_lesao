@@ -79,9 +79,6 @@ class Decisao:
         if 5 in comorbidade or 7 in comorbidade or 8 in comorbidade or 10 in comorbidade:
             riscos["risco_moderado_venoso"] += 0.075
         
-        if 11 in comorbidade:
-            riscos["risco_alto_venoso"] += 0.0375
-        
         if 8 in comorbidade or 9 in comorbidade or 10 in comorbidade or 12 in comorbidade:
             riscos["risco_moderado_arterial"] += 0.075
 
@@ -111,9 +108,6 @@ class Decisao:
 
         if claudicacao:
             riscos["risco_alto_arterial"] += 0.03
-
-        if not claudicacao:
-            riscos["risco_alto_venoso"] += 0.0375
         
         if tamanho_lesao < 1:
             riscos["risco_baixo_arterial"] += 0.1167
@@ -184,7 +178,7 @@ class Decisao:
             riscos["risco_moderado_arterial"] += 0.0357
 
         if edema == "Grau III" or edema == "Grau IV":
-            riscos["risco_alto_venoso"] += 0.125
+            riscos["risco_moderado_venoso"] += 0.125
             riscos["risco_moderado_arterial"] += 0.0357
 
         if aspecto_pele == "natural":

@@ -114,7 +114,7 @@ def create_item():
     etnia = data["etnia"]                       
     enchimento_capilar = data["enchimento_capilar"]           
     exsudato = data["exsudato"]                     
-    exsudato_volume = data["exsudato_volume"]             
+    exsudato_volume = utils.convert_string_to_float(data["exsudato_volume"])            
     idade = utils.convert_string_to_age(data["data_nascimento"])
     itb = utils.convert_string_to_float(data["itb"])                     
     localizacao = data["localizacao"].split(", ")              

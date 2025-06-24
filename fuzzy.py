@@ -50,5 +50,3 @@ class Fuzzy:
         if grau_moderado == grau_intenso and grau_moderado > grau_leve and grau_moderado > grau_pouco:
             return "moderado/intenso"
         return "intenso"
-
-print(Fuzzy.avalia_exudato(5.9))
