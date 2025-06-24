@@ -3,7 +3,7 @@ from dateutil.relativedelta import relativedelta
 
 
 def convert_string_to_boolean(string):
-    if string == "sim":
+    if string == "sim" or string == "yes":
         return True
     else:
         return False
