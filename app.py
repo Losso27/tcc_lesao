@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ARRAY
-from decisao import Decisao
+import decisao
 from fuzzy import Fuzzy
 import os
 import utils
@@ -9,7 +9,12 @@ import utils
 app = Flask(__name__)
 
 # Configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://user:password@localhost:5432/db'
+db_user = os.environ.get('DB_USER')
+db_password = os.environ.get('DB_PASSWORD')
+db_port = os.environ.get('DB_PORT')
+db_url = os.environ.get('DB_URL')
+db_database = os.environ.get('DB_DATABASE')
+app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{db_user}:{db_password}@{db_url}:{db_port}/{db_database}'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -123,17 +128,15 @@ def create_item():
     pulso = data["pulso"]                                
     sexo = data["sexo"]                        
     tamanho_lesao = utils.convert_string_to_float(data["tamanho_lesao"])               
-    tempertura = data["temperatura"]                  
+    temperatura = data["temperatura"]                  
     
     dor = Fuzzy.avalia_dor(dor)
     exsudato_volume = Fuzzy.avalia_exudato(exsudato_volume)
 
-    avaliacao = Decisao.avalia_tipo(bordas,tempertura, localizacao, claudicacao, pilificacao)
-
-    riscos = Decisao.avalia_risco(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor,
-                                  dor_em_elevacao, edema, enchimento_capilar, exsudato, exsudato_volume, idade,
-                                  itb, condicoes_clinicas_associadas, doppler, estilo_de_vida, etnia, pilificacao,
-                                  profundidade, pulso, sexo, tamanho_lesao)                       
+    avaliacao, riscos = decisao.avaliacao(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor,
+                     dor_em_elevacao, edema, enchimento_capilar, exsudato, exsudato_volume, idade,
+                     itb, condicoes_clinicas_associadas, doppler, estilo_de_vida, etnia, pilificacao,
+                     profundidade, pulso, sexo, tamanho_lesao, temperatura, localizacao)                   
 
     new_paciente = Paciente(
         aspecto_pele = aspecto_pele,
@@ -158,7 +161,7 @@ def create_item():
         pulso=pulso,
         sexo=sexo,
         tamanho_lesao=tamanho_lesao,
-        tempertura = tempertura,
+        tempertura = temperatura,
         localizacao= localizacao,
         tipo=avaliacao["tipo"],
         venosa= round(avaliacao["venosa"], 3),
