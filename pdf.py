@@ -66,7 +66,8 @@ def create_pdf(data):
     
 
     # Row 1
-    pdf.multi_cell(half_width * 2, 10, f"Localização da Lesão: {localizacao}", border=1, ln=True)
+    pdf.multi_cell(half_width * 2, 10, f"Localização da Lesão: {localizacao}", border=1)
+    pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Aspecto da pele: {aspecto_pele}", border=1)
     pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao}cm²", border=1, ln=True)
@@ -87,17 +88,20 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Edema: {edema}", border=1)
     pdf.cell(half_width, 10, f"Temperatura: {temperatura}", border=1, ln=True)
 
-    pdf.multi_cell(page_width, 10, f"Estilo de Vida: {estilo_de_vida}", border=1, ln=True)
+    pdf.multi_cell(page_width, 10, f"Estilo de Vida: {estilo_de_vida}", border=1)
+    pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Pulso: {pulso}", border=1)
     pdf.cell(half_width, 10, f"Aspecto Unhas: {aspecto_unha}", border=1, ln=True)
 
-    pdf.multi_cell(page_width, 10, f"Condições Clínicas Associadas: {condicoes_clinicas_associadas}", border=1, ln=True)
+    pdf.multi_cell(page_width, 10, f"Condições Clínicas Associadas: {condicoes_clinicas_associadas}", border=1)
+    pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Pilificação: {pilificacao}", border=1)
     pdf.cell(half_width, 10, f"Cladicação: {claudicacao}", border=1, ln=True)
 
-    pdf.multi_cell(page_width, 10, f"Comorbidades: {comorbidade}", border=1, ln=True)
+    pdf.multi_cell(page_width, 10, f"Comorbidades: {comorbidade}", border=1)
+    pdf.ln(0)
 
     # Row 8 (optional: pilificacao and enchimento capilar)
     pdf.cell(half_width, 10, f"ITB: {itb}", border=1)
