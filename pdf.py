@@ -108,7 +108,7 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Enchimento Capilar: {enchimento_capilar}", border=1, ln=True)
 
     # Row 11 (optional: doppler and ITB)
-    pdf.multi_cell(page_width, 10, f"Doppler: {doppler}", border=1, ln=True)
+    pdf.multi_cell(page_width, 10, f"Doppler: {doppler}", border=1)
     
     
 
