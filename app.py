@@ -1,8 +1,10 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ARRAY
 import decisao
 from fuzzy import Fuzzy
+from pdf import create_pdf
+import io
 import os
 import utils
 
@@ -176,6 +178,14 @@ def create_item():
     db.session.add(new_paciente)
     db.session.commit()
     return jsonify(new_paciente.to_dict()), 201
+
+@app.route('/pdf', methods=['POST'])
+def send_pdf():
+    data = request.get_json()
+    return send_file(
+                     io.BytesIO(create_pdf(data)),
+                     mimetype='application/pdf'
+               )
 
 @app.route('/discovery', methods=['POST'])
 def discovery_json():
