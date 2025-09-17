@@ -1,12 +1,13 @@
 from flask import Flask, request, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.dialects.postgresql import ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 import decisao
 from fuzzy import Fuzzy
 from pdf import create_pdf
 import io
 import os
 import utils
+from datetime import datetime
 
 app = Flask(__name__)
 
@@ -59,7 +60,14 @@ class Paciente(db.Model):
     tempertura                      = db.Column(db.String(255))                   
     tipo                            = db.Column(db.String(255))
     venosa                          = db.Column(db.Float)
-    arterial                        = db.Column(db.Float)                         
+    arterial                        = db.Column(db.Float)
+    peso                            = db.Column(db.Float)
+    altura                          = db.Column(db.Float)
+    imc                             = db.Column(db.Float)
+    cod_sus                         = db.Column(db.String(255))
+    data_exame                      = db.Column(TIMESTAMP)
+    nome                            = db.Column(db.String(255))
+
 
     def __repr__(self):
         return f"<Paciente {self.id}>"
@@ -130,7 +138,13 @@ def create_item():
     pulso = data["pulso"]                                
     sexo = data["sexo"]                        
     tamanho_lesao = utils.convert_string_to_float(data["tamanho_lesao"])               
-    temperatura = data["temperatura"]                  
+    temperatura = data["temperatura"]
+    peso = utils.convert_string_to_float(data["peso"])
+    altura = utils.convert_string_to_float(data["altura"])
+    imc = peso / altura ** 2
+    cod_sus = data["cod_sus"]
+    data_exame = datetime.now()
+    nome = data["nome"].title()
     
     dor = Fuzzy.avalia_dor(dor)
     exsudato_volume = Fuzzy.avalia_exudato(exsudato_volume)
@@ -173,7 +187,13 @@ def create_item():
         risco_baixo_arterial=round(riscos["risco_baixo_arterial"], 3),   
         risco_baixo_venoso=round(riscos["risco_baixo_venoso"], 3),     
         risco_moderado_arterial=round(riscos["risco_moderado_arterial"], 3),
-        risco_moderado_venoso=round(riscos["risco_moderado_venoso"], 3) 
+        risco_moderado_venoso=round(riscos["risco_moderado_venoso"], 3),
+        altura = altura,
+        peso = peso,
+        imc = imc,
+        cod_sus = cod_sus,
+        data_exame = data_exame,
+        nome = nome
     )
     db.session.add(new_paciente)
     db.session.commit()
@@ -184,7 +204,8 @@ def send_pdf():
     data = request.get_json()
     return send_file(
                      io.BytesIO(create_pdf(data)),
-                     mimetype='application/pdf'
+                     mimetype='application/pdf',
+                     as_attachment=False
                )
 
 @app.route('/discovery', methods=['POST'])

@@ -378,7 +378,8 @@ class Decisao(KnowledgeEngine):
     @Rule(DataInput(sexo="Feminino"))
     def se_sexo_feminino(self): 
         self.riscos["risco_baixo_arterial"] += 0.025
-        self.riscos["risco_alto_venoso"] += 0.025
+        self.riscos["risco_moderado_venoso"] += 0.015
+        self.riscos["risco_alto_venoso"] += 0.01
     
 def avaliacao(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor, dor_em_elevacao,
                      edema, enchimento_capilar, exsudato, exsudato_volume, idade, itb,                  

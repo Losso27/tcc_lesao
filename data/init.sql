@@ -1,5 +1,3 @@
-DROP TABLE IF EXISTS pacientes;
-
 create table pacientes
 (   
     id                              serial primary key,
@@ -15,7 +13,7 @@ create table pacientes
     exsudato                        integer,
     exsudato_volume                 varchar(255),
     idade                           integer,
-    itb                             double precision,
+    itb                             decimal,
     localizacao                     varchar(255),
     condicoes_clinicas_associadas   integer[],
     doppler                         integer[],
@@ -24,17 +22,23 @@ create table pacientes
     pilificacao                     varchar(255),
     profundidade                    varchar(255),
     pulso                           varchar(255),
-    risco                           double precision,
-    risco_alto_arterial             double precision,
-    risco_alto_venoso               double precision,
-    risco_baixo_arterial            double precision,
-    risco_baixo_venoso              double precision,
-    risco_moderado_arterial         double precision,
-    risco_moderado_venoso           double precision,
+    risco                           decimal,
+    risco_alto_arterial             decimal,
+    risco_alto_venoso               decimal,
+    risco_baixo_arterial            decimal,
+    risco_baixo_venoso              decimal,
+    risco_moderado_arterial         decimal,
+    risco_moderado_venoso           decimal,
     sexo                            varchar(255),
-    tamanho_lesao                   double precision,
+    tamanho_lesao                   decimal,
     tempertura                      varchar(255),
     tipo                            varchar(255),
-    venosa                          double precision,
-    arterial                        double precision
+    venosa                          decimal,
+    arterial                        decimal,
+    altura                          decimal,
+    peso                            decimal,
+    imc                             decimal,
+    cod_sus                         varchar(255),
+    nome                            varchar(255),
+    data_exame                      timestamp
 );

@@ -43,6 +43,9 @@ def create_pdf(data):
     temperatura = data["temperatura"].title()
     tipo = data["tipo"]
     risco = data["risco"]
+    peso = utils.convert_string_to_float(data["peso"])
+    altura = utils.convert_string_to_float(data["altura"])
+    imc = peso / altura ** 2
     nome = data["nome"].title()
     
     pdf = CustomPDF()
@@ -70,7 +73,7 @@ def create_pdf(data):
     pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Aspecto da pele: {aspecto_pele}", border=1)
-    pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao}cm²", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao} cm²", border=1, ln=True)
 
     # Row 2
     pdf.cell(half_width, 10, f"Profundidade da Lesão: {profundidade}", border=1)
@@ -78,11 +81,11 @@ def create_pdf(data):
 
     # Row 3
     pdf.cell(half_width, 10, f"Dor na elevação: {dor_em_elevacao}", border=1)
-    pdf.cell(half_width, 10, f"Intensidade da dor {dor}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Intensidade da dor {dor:.2f}", border=1, ln=True)
 
     # Row 4
     pdf.cell(half_width, 10, f"Aspecto Exsudato: {exsudato}", border=1)
-    pdf.cell(half_width, 10, f"Volume Exsudato {exsudato_volume}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Volume Exsudato {exsudato_volume:.2f}", border=1, ln=True)
 
     # Row 5
     pdf.cell(half_width, 10, f"Edema: {edema}", border=1)
@@ -104,13 +107,18 @@ def create_pdf(data):
     pdf.ln(0)
 
     # Row 8 (optional: pilificacao and enchimento capilar)
-    pdf.cell(half_width, 10, f"ITB: {itb}", border=1)
+    pdf.cell(half_width, 10, f"ITB: {itb:.2f}", border=1)
     pdf.cell(half_width, 10, f"Enchimento Capilar: {enchimento_capilar}", border=1, ln=True)
 
     # Row 11 (optional: doppler and ITB)
     pdf.multi_cell(page_width, 10, f"Doppler: {doppler}", border=1)
-    
-    
+    pdf.ln(0)
+
+    pdf.cell(half_width, 10, f"Peso: {peso:.1f} Kg", border=1)
+    pdf.cell(half_width, 10, f"Altura: {altura:.2f} m", border=1, ln=True)
+
+    # Row 11 (optional: doppler and ITB)
+    pdf.multi_cell(page_width, 10, f"IMC: {imc:.2f} Kg/m²", border=1)
 
     return pdf.output()
 
