@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, send_file
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.dialects.postgresql import ARRAY, TIMESTAMP
 import decisao
+from sqlalchemy import desc
 from fuzzy import Fuzzy
 from pdf import create_pdf
 import io
@@ -103,7 +104,37 @@ class Paciente(db.Model):
                 probabilidade_risco = self.risco_baixo_arterial
 
         return {
-            'id': self.id,
+            "id": self.id,                      
+            "aspecto_pele": self.aspecto_pele,                 
+            "aspecto_unha": self.aspecto_unha,   
+            "bordas": self.bordas,
+            "claudicacao": self.claudicacao,                 
+            "comorbidade": self.comorbidade,            
+            "dor": self.dor,                     
+            "dor_em_elevacao": self.dor_em_elevacao,      
+            "edema": self.edema,                        
+            "enchimento_capilar": self.enchimento_capilar,      
+            "exsudato": self.exsudato,                     
+            "exsudato_volume": self.exsudato_volume,              
+            "idade": self.idade,                        
+            "itb": self.itb,                          
+            "localizacao": self.localizacao,                  
+            "condicoes_clinicas_associadas": self.condicoes_clinicas_associadas,
+            "doppler": self.doppler,                      
+            "estilo_de_vida": self.estilo_de_vida,              
+            "etnia": self.etnia,                       
+            "pilificacao": self.pilificacao,                  
+            "profundidade": self.profundidade,      
+            "pulso": self.pulso,     
+            "sexo": self.sexo,                       
+            "tamanho_lesao": self.tamanho_lesao,                
+            "tempertura": self.tempertura,                             
+            "peso": self.peso,                    
+            "altura": self.altura,                     
+            "imc": self.imc,                          
+            "cod_sus": self.cod_sus,                      
+            "data_exame": self.data_exame,               
+            "nome": self.nome,
             'tipo': tipo,
             'probabilidade': probabilidade,
             'probabilidade_risco': probabilidade_risco,
@@ -220,10 +251,10 @@ def get_items():
     return jsonify([item.to_dict() for item in items])
 
 # Read a single item
-@app.route('/pacientes/<int:item_id>', methods=['GET'])
+@app.route('/pacientes/<string:item_id>', methods=['GET'])
 def get_item(item_id):
-    item = Paciente.query.get_or_404(item_id)
-    return jsonify(item.to_dict())
+    item = Paciente.query.where(Paciente.cod_sus == item_id).order_by(desc(Paciente.data_exame)).first_or_404()
+    return jsonify(item.to_dict()), 200
 
 # Delete an item
 @app.route('/pacientes/<int:item_id>', methods=['DELETE'])
