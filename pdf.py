@@ -40,7 +40,7 @@ def create_pdf(data):
     pulso = data["pulso"].title()                               
     sexo = data["sexo"].title()                        
     tamanho_lesao = data["tamanho_lesao"]       
-    temperatura = data["tempertura"].title()
+    temperatura = data["temperatura"].title()
     tipo = data["tipo"]
     risco = data["risco"]
     peso = data["peso"]
