@@ -20,31 +20,31 @@ def create_pdf(data):
     aspecto_pele = data["aspecto_pele"].title()             
     aspecto_unha = data["aspecto_unha"].title()            
     bordas = data["bordas"].title()                    
-    claudicacao = data["claudicacao"].title()
+    claudicacao = data["claudicacao"]
     condicoes_clinicas_associadas = translator(data["condicoes_clinicas_associadas"], dict_condicoes)
     comorbidade = translator(data["comorbidade"], dict_comorbidade)                  
     doppler = translator(data["doppler"], dict_doppler)                     
-    dor = utils.convert_string_to_float(data["dor"])                          
+    dor = data["dor"].title()                          
     dor_em_elevacao = data['dor_em_elevacao'].title()             
     edema = data["edema"]
     estilo_de_vida = translator(data["estilo_de_vida"], dict_estilo_vida)
     etnia = translator(data["etnia"], dict_etinia)         
     enchimento_capilar = data["enchimento_capilar"].title()         
     exsudato = translator([data["exsudato"]], dict_exsudato)                   
-    exsudato_volume = utils.convert_string_to_float(data["exsudato_volume"])            
-    idade = utils.convert_string_to_age(data["data_nascimento"])
-    itb = utils.convert_string_to_float(data["itb"])                     
+    exsudato_volume = data["exsudato_volume"].title()         
+    idade = data["idade"]
+    itb = data["itb"]                   
     localizacao = data["localizacao"].title()             
     pilificacao = data["pilificacao"].title()            
     profundidade = data ["profundidade"].title()
     pulso = data["pulso"].title()                               
     sexo = data["sexo"].title()                        
-    tamanho_lesao = utils.convert_string_to_float(data["tamanho_lesao"])               
-    temperatura = data["temperatura"].title()
+    tamanho_lesao = data["tamanho_lesao"]       
+    temperatura = data["tempertura"].title()
     tipo = data["tipo"]
     risco = data["risco"]
-    peso = utils.convert_string_to_float(data["peso"])
-    altura = utils.convert_string_to_float(data["altura"])
+    peso = data["peso"]
+    altura = data["altura"]
     imc = peso / altura ** 2
     nome = data["nome"].title()
     
@@ -81,11 +81,11 @@ def create_pdf(data):
 
     # Row 3
     pdf.cell(half_width, 10, f"Dor na elevação: {dor_em_elevacao}", border=1)
-    pdf.cell(half_width, 10, f"Intensidade da dor {dor:.2f}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Intensidade da dor {dor}", border=1, ln=True)
 
     # Row 4
     pdf.cell(half_width, 10, f"Aspecto Exsudato: {exsudato}", border=1)
-    pdf.cell(half_width, 10, f"Volume Exsudato {exsudato_volume:.2f}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Volume Exsudato {exsudato_volume}", border=1, ln=True)
 
     # Row 5
     pdf.cell(half_width, 10, f"Edema: {edema}", border=1)
@@ -101,23 +101,20 @@ def create_pdf(data):
     pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Pilificação: {pilificacao}", border=1)
-    pdf.cell(half_width, 10, f"Cladicação: {claudicacao}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Claudicação: {claudicacao}", border=1, ln=True)
 
     pdf.multi_cell(page_width, 10, f"Comorbidades: {comorbidade}", border=1)
     pdf.ln(0)
 
-    # Row 8 (optional: pilificacao and enchimento capilar)
     pdf.cell(half_width, 10, f"ITB: {itb:.2f}", border=1)
     pdf.cell(half_width, 10, f"Enchimento Capilar: {enchimento_capilar}", border=1, ln=True)
 
-    # Row 11 (optional: doppler and ITB)
     pdf.multi_cell(page_width, 10, f"Doppler: {doppler}", border=1)
     pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Peso: {peso:.1f} Kg", border=1)
     pdf.cell(half_width, 10, f"Altura: {altura:.2f} m", border=1, ln=True)
 
-    # Row 11 (optional: doppler and ITB)
     pdf.multi_cell(page_width, 10, f"IMC: {imc:.2f} Kg/m²", border=1)
 
     return pdf.output()

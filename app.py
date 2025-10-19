@@ -58,7 +58,7 @@ class Paciente(db.Model):
     risco_moderado_venoso           = db.Column(db.Float)        
     sexo                            = db.Column(db.String(255))                         
     tamanho_lesao                   = db.Column(db.Float)                
-    tempertura                      = db.Column(db.String(255))                   
+    temperatura                     = db.Column(db.String(255))                   
     tipo                            = db.Column(db.String(255))
     venosa                          = db.Column(db.Float)
     arterial                        = db.Column(db.Float)
@@ -68,6 +68,13 @@ class Paciente(db.Model):
     cod_sus                         = db.Column(db.String(255))
     data_exame                      = db.Column(TIMESTAMP)
     nome                            = db.Column(db.String(255))
+    tipo_tecido                     = db.Column(db.String(255))
+    tratamento_remocao              = db.Column(db.Text)
+    tratamento_terapia_topica       = db.Column(db.Text)
+    tratamento_cobertura            = db.Column(db.Text)
+    tratamento_adjuvante            = db.Column(db.Text)
+    dor_num                         = db.Column(db.Float)
+    exsudato_volume_num             = db.Column(db.Float)
 
 
     def __repr__(self):
@@ -128,7 +135,7 @@ class Paciente(db.Model):
             "pulso": self.pulso,     
             "sexo": self.sexo,                       
             "tamanho_lesao": self.tamanho_lesao,                
-            "tempertura": self.tempertura,                             
+            "temperatura": self.temperatura,                             
             "peso": self.peso,                    
             "altura": self.altura,                     
             "imc": self.imc,                          
@@ -138,7 +145,14 @@ class Paciente(db.Model):
             'tipo': tipo,
             'probabilidade': probabilidade,
             'probabilidade_risco': probabilidade_risco,
-            'risco': risco
+            'risco': risco,
+            "tipo_tecido": self.tipo_tecido,                            
+            "tratamento_remocao": self.tratamento_remocao,              
+            "tratamento_terapia_topica": self.tratamento_terapia_topica,
+            "tratamento_cobertura": self.tratamento_cobertura,          
+            "tratamento_adjuvante": self.tratamento_adjuvante,
+            "dor_num" : self.dor_num,
+            "exsudato_volume_num": self.exsudato_volume_num    
         }
 
 # Create an item
@@ -153,14 +167,14 @@ def create_item():
     condicoes_clinicas_associadas = data["condicoes_clinicas_associadas"]
     comorbidade = data["comorbidade"]                  
     doppler = data["doppler"]                     
-    dor = utils.convert_string_to_float(data["dor"])                          
+    dor_num = utils.convert_string_to_float(data["dor"])                          
     dor_em_elevacao = utils.convert_string_to_boolean(data['dor_em_elevacao'])              
     edema = data["edema"]                        
     estilo_de_vida = data ["estilo_de_vida"]               
     etnia = data["etnia"]                       
     enchimento_capilar = data["enchimento_capilar"]           
     exsudato = data["exsudato"]                     
-    exsudato_volume = utils.convert_string_to_float(data["exsudato_volume"])            
+    exsudato_volume_num = utils.convert_string_to_float(data["exsudato_volume"])            
     idade = utils.convert_string_to_age(data["data_nascimento"])
     itb = utils.convert_string_to_float(data["itb"])                     
     localizacao = data["localizacao"].split(", ")              
@@ -176,18 +190,21 @@ def create_item():
     cod_sus = data["cod_sus"]
     data_exame = datetime.now()
     nome = data["nome"].title()
+    tipo_tecido = data["tipo_tecido"]
     
-    dor = Fuzzy.avalia_dor(dor)
-    exsudato_volume = Fuzzy.avalia_exudato(exsudato_volume)
+    dor = Fuzzy.avalia_dor(dor_num)
+    exsudato_volume = Fuzzy.avalia_exudato(exsudato_volume_num)
 
     avaliacao, riscos = decisao.avaliacao(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor,
                      dor_em_elevacao, edema, enchimento_capilar, exsudato, exsudato_volume, idade,
                      itb, condicoes_clinicas_associadas, doppler, estilo_de_vida, etnia, pilificacao,
-                     profundidade, pulso, sexo, tamanho_lesao, temperatura, localizacao)                   
+                     profundidade, pulso, sexo, tamanho_lesao, temperatura, localizacao)
+
+    tratamento = decisao.avaliacao_tratamento(tipo_tecido, exsudato_volume, itb, avaliacao["tipo"])           
 
     new_paciente = Paciente(
         aspecto_pele = aspecto_pele,
-        aspecto_unha = aspecto_unha,
+        aspecto_unha = aspecto_unha, 
         bordas = bordas,
         claudicacao = claudicacao,
         comorbidade = comorbidade,
@@ -208,7 +225,7 @@ def create_item():
         pulso=pulso,
         sexo=sexo,
         tamanho_lesao=tamanho_lesao,
-        tempertura = temperatura,
+        temperatura = temperatura,
         localizacao= localizacao,
         tipo=avaliacao["tipo"],
         venosa= round(avaliacao["venosa"], 3),
@@ -224,20 +241,18 @@ def create_item():
         imc = imc,
         cod_sus = cod_sus,
         data_exame = data_exame,
-        nome = nome
+        nome = nome,
+        tipo_tecido = tipo_tecido,              
+        tratamento_remocao = tratamento["tratamento_remocao"],  
+        tratamento_terapia_topica = tratamento["tratamento_terapia_topica"],
+        tratamento_cobertura = tratamento["tratamento_cobertura"],
+        tratamento_adjuvante = tratamento["tratamento_adjuvante"],
+        dor_num = dor_num,
+        exsudato_volume_num = exsudato_volume_num
     )
     db.session.add(new_paciente)
     db.session.commit()
     return jsonify(new_paciente.to_dict()), 201
-
-@app.route('/pdf', methods=['POST'])
-def send_pdf():
-    data = request.get_json()
-    return send_file(
-                     io.BytesIO(create_pdf(data)),
-                     mimetype='application/pdf',
-                     as_attachment=False
-               )
 
 @app.route('/discovery', methods=['POST'])
 def discovery_json():
@@ -251,6 +266,15 @@ def get_items():
     return jsonify([item.to_dict() for item in items])
 
 # Read a single item
+@app.route('/pdf/<string:item_id>', methods=['GET'])
+def get_pdf(item_id):
+    item = Paciente.query.where(Paciente.cod_sus == item_id).order_by(desc(Paciente.data_exame)).first_or_404()
+    return send_file(
+                 io.BytesIO(create_pdf(item.to_dict())),
+                 mimetype='application/pdf',
+                 as_attachment=False
+           )
+
 @app.route('/pacientes/<string:item_id>', methods=['GET'])
 def get_item(item_id):
     item = Paciente.query.where(Paciente.cod_sus == item_id).order_by(desc(Paciente.data_exame)).first_or_404()

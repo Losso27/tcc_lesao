@@ -404,3 +404,85 @@ def get_avaliacao_tipo(avaliacao):
         avaliacao["tipo"] = "venosa"
 
     return avaliacao
+
+
+def avaliacao_tratamento(tipo_tecido, volume_exusdato, itb, tipo_lesao):
+    tratamento = {"tratamento_remocao": "",
+                  "tratamento_terapia_topica": "",
+                  "tratamento_cobertura": "",
+                  "tratamento_adjuvante": ""}
+    if tipo_lesao == "venosa":
+
+        if tipo_tecido == "esfacelo" or tipo_tecido == "necrotico":
+            tratamento["tratamento_remocao"] += "Indicação: Desbridamento Autolítico ou Enzimatico ou Mecânico. Instrumental: instrumentais cortantes como bisture e tesoura"
+            tratamento["tratamento_terapia_topica"] += """Indicação: Desbridamento 
+                                                            Autolítico-Hidrogel com ou sem alginato ou Hidrocolóides ou Hidrofibra ou Iodo cadexômero
+                                                            Enzimatico-Colagenase ou Papaína 6%%, 10%%, 20%% 
+                                                            Mecânico-Hidrofibra ou irrigação com soro fisiológico em jato"""
+            tratamento["tratamento_cobertura"] += "Indicação: Hidrofibra com prata ou Curativo carboximetilcelulose com prata"
+        
+        if tipo_tecido == "granulacao":
+            tratamento["tratamento_remocao"] += "Indicação: Manter o meio úmido e proteção"
+            tratamento["tratamento_terapia_topica"] += "Indicação: Hidrogel com o sem alginato Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Indicação: Hidrocolóides ou Hidrofibra"
+
+        if tipo_tecido == "epitelizacao":
+            tratamento["tratamento_remocao"] += "Indicação: Proteger "
+            tratamento["tratamento_terapia_topica"] += "Indicação: Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Indicação: Fibra de colágeno"
+
+        if volume_exusdato == "leve" or volume_exusdato == "leve/pouco" or volume_exusdato == "pouco":
+            tratamento["tratamento_terapia_topica"] += "Hidrogel Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Hidrocolóides"
+
+        if volume_exusdato == "pouco/moderado" or volume_exusdato == "moderado":
+            tratamento["tratamento_terapia_topica"] += "Não utilizar terapia tópica"
+            tratamento["tratamento_cobertura"] += "Alginato de cálcio ou Hidrofibra"
+
+        if volume_exusdato == "moderado/intenso" or volume_exusdato == "intenso":
+            tratamento["tratamento_terapia_topica"] += "Não utilizar terapia tópica"
+            tratamento["tratamento_cobertura"] += "Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata"
+
+        if itb >= 0.9 and itb < 1.3:
+            tratamento["tratamento_adjuvante"] += "Indicação: Bota de Unna Terapia compressiva Meias elásticas(20-30 mmHg) Elevação dos membros"
+        
+        if itb <= 0.9:
+            tratamento["tratamento_adjuvante"] += "Indicação:Terapia compressiva"
+        
+    if tipo_lesao == "arterial":
+
+        if tipo_tecido == "esfacelo" or tipo_tecido == "necrotico":
+            tratamento["tratamento_remocao"] += "Indicação: Evitar o desbridamento"
+            tratamento["tratamento_terapia_topica"] += "Indicação: Hidrogel com o sem alginato Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Indicação: Hidrofibra com prata ou Alginato de cálcio"
+        
+        if tipo_tecido == "granulacao":
+            tratamento["tratamento_remocao"] += "Indicação: Manter o meio úmido e proteção. Realizar o desbridamento com critérios. Evitar o desbridamento instrumental."
+            tratamento["tratamento_terapia_topica"] += "Indicação: Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Indicação: Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
+
+        if tipo_tecido == "epitelizacao":
+            tratamento["tratamento_remocao"] += "Indicação: Proteger. Realizar o desbridamento com critérios. Evitar o desbridamento instrumental."
+            tratamento["tratamento_terapia_topica"] += "Indicação: Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Indicação: Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
+
+        if volume_exusdato == "leve" or volume_exusdato == "leve/pouco" or volume_exusdato == "pouco":
+            tratamento["tratamento_terapia_topica"] += "Hidrogel Acidos Graxos Essenciais (AGE)"
+            tratamento["tratamento_cobertura"] += "Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
+
+        if volume_exusdato == "pouco/moderado" or volume_exusdato == "moderado":
+            tratamento["tratamento_terapia_topica"] += "Não utilizar terapia tópica"
+            tratamento["tratamento_cobertura"] += """Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata. 
+                                                        Considerar Infecção - Erisipela e Celulite Infecciosa Encaminhar para atendimento médico"""
+
+        if volume_exusdato == "moderado/intenso" or volume_exusdato == "intenso":
+            tratamento["tratamento_terapia_topica"] += "Não utilizar terapia tópica"
+            tratamento["tratamento_cobertura"] += """Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata
+                                                        Considerar Infecção - Erisipela e Celulite Infecciosa Encaminhar para atendimento médico"""
+
+        if itb < 0.5:
+            tratamento["tratamento_adjuvante"] += "Contraindicação: Qualquer forma de Terapia compressiva. Encaminhar URGENTE ao vascular"
+        
+        if itb <= 0.9:
+            tratamento["tratamento_adjuvante"] += "Indicação: Compressão deve ser usada com precaução"
+    return tratamento
