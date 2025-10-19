@@ -34,7 +34,7 @@ def create_pdf(data):
     exsudato_volume = data["exsudato_volume"].title()         
     idade = data["idade"]
     itb = data["itb"]                   
-    localizacao = data["localizacao"].title()             
+    localizacao = data["localizacao"]          
     pilificacao = data["pilificacao"].title()            
     profundidade = data ["profundidade"].title()
     pulso = data["pulso"].title()                               
