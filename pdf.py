@@ -39,7 +39,7 @@ def create_pdf(data):
     profundidade = paciente ["profundidade"].title()
     pulso = paciente["pulso"].title()                               
     sexo = paciente["sexo"].title()                        
-    tamanho_lesao = paciente["tamanho_lesao"]       
+    tamanho_lesao = paciente["comprimento_lesao"] * paciente["largura_lesao"]       
     temperatura = paciente["temperatura"].title()
     tipo = paciente["tipo"]
     risco = paciente["risco"]
