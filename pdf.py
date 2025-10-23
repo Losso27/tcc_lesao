@@ -1,5 +1,4 @@
 from fpdf import FPDF
-import utils
 
 dict_etinia  = {13: "Amarelo", 14: "Branco", 15: "Indígena", 16: "Pardo", 17: "Preto"}
 dict_condicoes = {28: "Trombose Venosa Profunda", 29:"Linfedema", 30:"Celulite Infecciosa", 31:"Erisipela", 32:"Lipodermatoesclerose", 33:"Fungos", 34:"Artrite", 35:"Osteomielite"}
@@ -17,37 +16,46 @@ class CustomPDF(FPDF):
 
 def create_pdf(data):
 
-    aspecto_pele = data["aspecto_pele"].title()             
-    aspecto_unha = data["aspecto_unha"].title()            
-    bordas = data["bordas"].title()                    
-    claudicacao = data["claudicacao"]
-    condicoes_clinicas_associadas = translator(data["condicoes_clinicas_associadas"], dict_condicoes)
-    comorbidade = translator(data["comorbidade"], dict_comorbidade)                  
-    doppler = translator(data["doppler"], dict_doppler)                     
-    dor = data["dor"].title()                          
-    dor_em_elevacao = data['dor_em_elevacao'].title()             
-    edema = data["edema"]
-    estilo_de_vida = translator(data["estilo_de_vida"], dict_estilo_vida)
-    etnia = translator(data["etnia"], dict_etinia)         
-    enchimento_capilar = data["enchimento_capilar"].title()         
-    exsudato = translator([data["exsudato"]], dict_exsudato)                   
-    exsudato_volume = data["exsudato_volume"].title()         
-    idade = data["idade"]
-    itb = data["itb"]                   
-    localizacao = data["localizacao"]          
-    pilificacao = data["pilificacao"].title()            
-    profundidade = data ["profundidade"].title()
-    pulso = data["pulso"].title()                               
-    sexo = data["sexo"].title()                        
-    tamanho_lesao = data["tamanho_lesao"]       
-    temperatura = data["temperatura"].title()
-    tipo = data["tipo"]
-    risco = data["risco"]
-    peso = data["peso"]
-    altura = data["altura"]
+    paciente = data[0].to_dict()
+    aspecto_pele = paciente["aspecto_pele"].title()             
+    aspecto_unha = paciente["aspecto_unha"].title()            
+    bordas = paciente["bordas"].title()                    
+    claudicacao = paciente["claudicacao"]
+    condicoes_clinicas_associadas = translator(paciente["condicoes_clinicas_associadas"], dict_condicoes)
+    comorbidade = translator(paciente["comorbidade"], dict_comorbidade)                  
+    doppler = translator(paciente["doppler"], dict_doppler)                     
+    dor = paciente["dor"].title()                          
+    dor_em_elevacao = paciente['dor_em_elevacao'].title()             
+    edema = paciente["edema"]
+    estilo_de_vida = translator(paciente["estilo_de_vida"], dict_estilo_vida)
+    etnia = translator(paciente["etnia"], dict_etinia)         
+    enchimento_capilar = paciente["enchimento_capilar"].title()         
+    exsudato = translator([paciente["exsudato"]], dict_exsudato)                   
+    exsudato_volume = paciente["exsudato_volume"].title()         
+    idade = paciente["idade"]
+    itb = paciente["itb"]                   
+    localizacao = paciente["localizacao"]          
+    pilificacao = paciente["pilificacao"].title()            
+    profundidade = paciente ["profundidade"].title()
+    pulso = paciente["pulso"].title()                               
+    sexo = paciente["sexo"].title()                        
+    tamanho_lesao = paciente["tamanho_lesao"]       
+    temperatura = paciente["temperatura"].title()
+    tipo = paciente["tipo"]
+    risco = paciente["risco"]
+    peso = paciente["peso"]
+    altura = paciente["altura"]
     imc = peso / altura ** 2
-    nome = data["nome"].title()
-    
+    nome = paciente["nome"].title()
+
+    historico_tratamento = "Tratamento:\n"
+    for p in data:
+        p_dict = p.to_dict()
+        data_exame = p_dict['data_exame']
+        tratamento_terapia_topica = p_dict["tratamento_terapia_topica"]
+        tratamento_cobertura = p_dict["tratamento_cobertura"]
+        tratamento_remocao = p_dict["tratamento_remocao"]
+        historico_tratamento += f"- {data_exame} Terapia tópica: {tratamento_terapia_topica} Cobertura Primária: {tratamento_cobertura} Remoção de Tecido:{tratamento_remocao} \n" 
     pdf = CustomPDF()
     pdf.set_auto_page_break(auto=True, margin=15)
     pdf.add_page()
@@ -116,6 +124,19 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Altura: {altura:.2f} m", border=1, ln=True)
 
     pdf.multi_cell(page_width, 10, f"IMC: {imc:.2f} Kg/m²", border=1)
+    pdf.ln(0)
+
+    pdf.multi_cell(page_width, 10, f"Histórico Tratamento:")
+    pdf.ln(0)
+    for p in data:
+        p_dict = p.to_dict()
+        data_exame = p_dict['data_exame']
+        tratamento_terapia_topica = p_dict["tratamento_terapia_topica"]
+        tratamento_cobertura = p_dict["tratamento_cobertura"]
+        tratamento_remocao = p_dict["tratamento_remocao"]
+        pdf.multi_cell(page_width, 10, f"- {data_exame:%d/%m/%Y}\nTerapia tópica: {tratamento_terapia_topica} \nCobertura Primária: {tratamento_cobertura} \nRemoção de Tecido: {tratamento_remocao} \n")
+        pdf.ln(0)
+
 
     return pdf.output()
 

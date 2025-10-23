@@ -57,7 +57,8 @@ class Paciente(db.Model):
     risco_moderado_arterial         = db.Column(db.Float)     
     risco_moderado_venoso           = db.Column(db.Float)        
     sexo                            = db.Column(db.String(255))                         
-    tamanho_lesao                   = db.Column(db.Float)                
+    largura_lesao                   = db.Column(db.Float)
+    comprimento_lesao               = db.Column(db.Float)                
     temperatura                     = db.Column(db.String(255))                   
     tipo                            = db.Column(db.String(255))
     venosa                          = db.Column(db.Float)
@@ -134,7 +135,8 @@ class Paciente(db.Model):
             "profundidade": self.profundidade,      
             "pulso": self.pulso,     
             "sexo": self.sexo,                       
-            "tamanho_lesao": self.tamanho_lesao,                
+            "comprimento_lesao": self.comprimento_lesao,
+            "largura_lesao": self.largura_lesao,                
             "temperatura": self.temperatura,                             
             "peso": self.peso,                    
             "altura": self.altura,                     
@@ -181,8 +183,9 @@ def create_item():
     pilificacao = data["pilificacao"]                  
     profundidade = data ["profundidade"]                
     pulso = data["pulso"]                                
-    sexo = data["sexo"]                        
-    tamanho_lesao = utils.convert_string_to_float(data["tamanho_lesao"])               
+    sexo = data["sexo"]
+    largura_lesao = utils.convert_string_to_float(data["largura_lesao"])
+    comprimento_lesao = utils.convert_string_to_float(data["comprimento_lesao"])
     temperatura = data["temperatura"]
     peso = utils.convert_string_to_float(data["peso"])
     altura = utils.convert_string_to_float(data["altura"])
@@ -198,7 +201,7 @@ def create_item():
     avaliacao, riscos = decisao.avaliacao(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor,
                      dor_em_elevacao, edema, enchimento_capilar, exsudato, exsudato_volume, idade,
                      itb, condicoes_clinicas_associadas, doppler, estilo_de_vida, etnia, pilificacao,
-                     profundidade, pulso, sexo, tamanho_lesao, temperatura, localizacao)
+                     profundidade, pulso, sexo, largura_lesao * comprimento_lesao, temperatura, localizacao)
 
     tratamento = decisao.avaliacao_tratamento(tipo_tecido, exsudato_volume, itb, avaliacao["tipo"])           
 
@@ -224,7 +227,8 @@ def create_item():
         profundidade = profundidade,
         pulso=pulso,
         sexo=sexo,
-        tamanho_lesao=tamanho_lesao,
+        comprimento_lesao=comprimento_lesao,
+        largura_lesao = largura_lesao,
         temperatura = temperatura,
         localizacao= localizacao,
         tipo=avaliacao["tipo"],
@@ -268,9 +272,9 @@ def get_items():
 # Read a single item
 @app.route('/pdf/<string:item_id>', methods=['GET'])
 def get_pdf(item_id):
-    item = Paciente.query.where(Paciente.cod_sus == item_id).order_by(desc(Paciente.data_exame)).first_or_404()
+    item = Paciente.query.where(Paciente.cod_sus == item_id).order_by(desc(Paciente.data_exame)).all()
     return send_file(
-                 io.BytesIO(create_pdf(item.to_dict())),
+                 io.BytesIO(create_pdf(item)),
                  mimetype='application/pdf',
                  as_attachment=False
            )
