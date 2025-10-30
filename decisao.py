@@ -387,6 +387,8 @@ def avaliacao(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor,
                      profundidade, pulso, sexo, tamanho_lesao, temperatura, localizacao):
     engine = Decisao()
     engine.reset()
+    if itb == None:
+        itb = 0.99
     engine.declare(DataInput(aspecto_pele=aspecto_pele, aspecto_unha=aspecto_unha, bordas=bordas, claudicacao=claudicacao, 
                              comorbidade=comorbidade, dor=dor, dor_em_elevacao=dor_em_elevacao, edema = edema,
                              enchimento_capilar = enchimento_capilar, exsudato = exsudato, exsudato_volume = exsudato_volume, 
@@ -445,10 +447,10 @@ def avaliacao_tratamento(tipo_tecido, volume_exusdato, itb, tipo_lesao):
             tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica."
             tratamento["tratamento_cobertura"] += "Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata"
 
-        if itb >= 0.9 and itb < 1.3:
+        if itb !=None and itb >= 0.9 and itb < 1.3:
             tratamento["tratamento_remocao"] += " Tratamento adjuvante: Bota de Unna; Terapia compressiva; Meias elásticas(20-30 mmHg); Elevação dos membros"
         
-        if itb <= 0.9:
+        if itb !=None and itb <= 0.9:
             tratamento["tratamento_remocao"] += " Tratamento adjuvante: Contraindicado Terapia compressiva"
         
     if tipo_lesao == "arterial":
@@ -482,9 +484,9 @@ def avaliacao_tratamento(tipo_tecido, volume_exusdato, itb, tipo_lesao):
             tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica"
             tratamento["tratamento_cobertura"] += " Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata. Considerar Infecção (Erisipela e Celulite Infecciosa) - Encaminhar para atendimento médico."
 
-        if itb < 0.5:
+        if itb !=None and itb < 0.5:
             tratamento["tratamento_remocao"] += " Tratamento adjuvante: Contraindicado Qualquer forma de Terapia compressiva. Encaminhar URGENTE ao vascular."
         
-        if itb <= 0.89:
+        if itb !=None and itb <= 0.89:
             tratamento["tratamento_remocao"] += " Tratamento adjuvante: Compressão deve ser usada com precaução."
     return tratamento

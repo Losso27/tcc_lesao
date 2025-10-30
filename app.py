@@ -177,8 +177,7 @@ def create_item():
     enchimento_capilar = data["enchimento_capilar"]           
     exsudato = data["exsudato"]                     
     exsudato_volume_num = utils.convert_string_to_float(data["exsudato_volume"])            
-    idade = utils.convert_string_to_age(data["data_nascimento"])
-    itb = utils.convert_string_to_float(data["itb"])                     
+    idade = utils.convert_string_to_age(data["data_nascimento"])            
     localizacao = data["localizacao"].split(", ")              
     pilificacao = data["pilificacao"]                  
     profundidade = data ["profundidade"]                
@@ -194,6 +193,11 @@ def create_item():
     data_exame = datetime.now()
     nome = data["nome"].title()
     tipo_tecido = data["tipo_tecido"]
+
+    if data["itb"].isdigit():
+        itb = utils.convert_string_to_float(data["itb"])
+    else:
+        itb = None 
     
     dor = Fuzzy.avalia_dor(dor_num)
     exsudato_volume = Fuzzy.avalia_exudato(exsudato_volume_num)

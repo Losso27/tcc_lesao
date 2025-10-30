@@ -34,7 +34,7 @@ def create_pdf(data):
     exsudato_volume = paciente["exsudato_volume"].title()         
     idade = paciente["idade"]
     itb = paciente["itb"]                   
-    localizacao = paciente["localizacao"]          
+    localizacao = ",".join(paciente["localizacao"])          
     pilificacao = paciente["pilificacao"].title()            
     profundidade = paciente ["profundidade"].title()
     pulso = paciente["pulso"].title()                               
@@ -114,7 +114,7 @@ def create_pdf(data):
     pdf.multi_cell(page_width, 10, f"Comorbidades: {comorbidade}", border=1)
     pdf.ln(0)
 
-    pdf.cell(half_width, 10, f"ITB: {itb:.2f}", border=1)
+    pdf.cell(half_width, 10, f"ITB: {itb}", border=1)
     pdf.cell(half_width, 10, f"Enchimento Capilar: {enchimento_capilar}", border=1, ln=True)
 
     pdf.multi_cell(page_width, 10, f"Doppler: {doppler}", border=1)
