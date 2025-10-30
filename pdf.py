@@ -143,6 +143,7 @@ def create_pdf(data):
 def translator(source, dict):
     output = ""
     for i in source:
-        output += dict[i] + ", "
+        if i != None:
+            output += dict[i] + ", "
     return output[:-2]
 
