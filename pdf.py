@@ -48,6 +48,9 @@ def create_pdf(data):
     imc = peso / altura ** 2
     nome = paciente["nome"].title()
 
+    if itb == None:
+        itb = ""
+
     historico_tratamento = "Tratamento:\n"
     for p in data:
         p_dict = p.to_dict()
