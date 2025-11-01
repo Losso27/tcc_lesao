@@ -380,15 +380,123 @@ class Decisao(KnowledgeEngine):
         self.riscos["risco_baixo_arterial"] += 0.025
         self.riscos["risco_moderado_venoso"] += 0.015
         self.riscos["risco_alto_venoso"] += 0.01
+
+class DecisaoTratamento(KnowledgeEngine):
+    def __init__(self):
+
+        self.tratamento = {"tratamento_remocao": "",
+                  "tratamento_terapia_topica": "",
+                  "tratamento_cobertura": "",
+                  "tratamento_adjuvante": ""}
+        super().__init__()
+    
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido = L("esfacelo") |  L("necrotico") ))
+    def se_lesao_venosa_tipo_de_tecido_esfacelo_ou_necrotico(self):
+        self.tratamento["tratamento_remocao"] += "Desbridamento Autolítico ou Enzimatico ou Mecânico. Com instrumentais cortantes como bisturi e tesoura."
+        self.tratamento["tratamento_terapia_topica"] += "Desbridamento e Terapia Tópica Autolítica (Hidrogel com ou sem alginato ou Hidrocolóides ou Hidrofibra ou Iodo cadexômero); Enzimatico (Colagenase ou Papaína 6%, 10%, 20%); Mecânico (Hidrofibra ou irrigação com soro fisiológico em jato)"
+        self.tratamento["tratamento_cobertura"] += "Hidrofibra com prata ou Curativo carboximetilcelulose com prata"
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido = L("granulacao")))
+    def se_lesao_venosa_tipo_de_tecido_granulacao(self):
+        self.tratamento["tratamento_remocao"] += "Manter o meio úmido e proteção."
+        self.tratamento["tratamento_terapia_topica"] += "Hidrogel com o sem alginato Acidos Graxos Essenciais (AGE)"
+        self.tratamento["tratamento_cobertura"] += "Hidrocolóides ou Hidrofibra"
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido = L("epitelizacao")))
+    def se_lesao_venosa_tipo_de_tecido_epitelizacao(self):
+        self.tratamento["tratamento_remocao"] += "Proteger."
+        self.tratamento["tratamento_terapia_topica"] += "Acidos Graxos Essenciais (AGE)"
+        self.tratamento["tratamento_cobertura"] += "Fibra de colágeno"
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido="epitelizacao", volume_exsudato=L("leve") | L("leve/pouco") | L("pouco")))
+    def se_lesao_venosa_tipo_tecido_epitelizacao_volume_exsudado_leve(self):
+        self.tratamento["tratamento_terapia_topica"] += "ou Hidrogel."
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido="epitelizacao", volume_exsudato=L("leve") | L("leve/pouco") | L("pouco")))
+    def se_lesao_venosa_tipo_tecido_epitelizacao_volume_exsudado_leve(self):
+        self.tratamento["tratamento_terapia_topica"] += "ou Hidrogel."
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido=IS_NOT("granulacao"), volume_exsudato=L("leve") | L("leve/pouco") | L("pouco")))
+    def se_lesao_venosa_tipo_tecido_nao_granulacao_volume_exsudado_leve(self):
+        self.tratamento["tratamento_terapia_topica"] += "ou Hidrocolóides."
+
+    @Rule(DataInput(tipo_lesao="venosa", volume_exsudato=L("pouco/moderado") | L("moderado")))
+    def se_lesao_venosa_volume_exsudado_moderado(self):
+        self.tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica."
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido=IS_NOT("epitelizacao"), volume_exsudato=L("pouco/moderado") | L("moderado")))
+    def se_lesao_venosa_tecido_nao_epitelizacao_volume_exsudado_moderado(self):
+        self.tratamento["tratamento_cobertura"] += " ou Alginato de cálcio."
+
+    @Rule(DataInput(tipo_lesao="venosa", tipo_tecido="epitelizacao", volume_exsudato=L("pouco/moderado") | L("moderado")))
+    def se_lesao_venosa_tecido_epitelizacao_volume_exsudado_moderado(self):
+        self.tratamento["tratamento_cobertura"] += " ou Alginato de cálcio ou Hidrofibra."
+    
+    @Rule(DataInput(tipo_lesao="venosa", volume_exsudato=L("moderado/intenso") | L("intenso")))
+    def se_lesao_venosa_volume_exsudado_intenso(self):
+        self.tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica."
+        self.tratamento["tratamento_cobertura"] += "Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata"
+
+    @Rule(DataInput(tipo_lesao="venosa", itb= BETWEEN(0.9, 1.3)))
+    def se_lesao_venosa_itb_entre_09_13(self):
+        self.tratamento["tratamento_remocao"] += " Tratamento adjuvante: Bota de Unna; Terapia compressiva; Meias elásticas(20-30 mmHg); Elevação dos membros"
+    
+    @Rule(DataInput(tipo_lesao="venosa", itb= LT(0.9)))
+    def se_lesao_venosa_itb_menor_09(self):
+        self.tratamento["tratamento_remocao"] += " Tratamento adjuvante: Contraindicado Terapia compressiva"
+
+    @Rule(DataInput(tipo_lesao="arterial", tipo_tecido = L("esfacelo") |  L("necrotico") ))
+    def se_lesao_arterial_tipo_de_tecido_esfacelo_ou_necrotico(self):
+        self.tratamento["tratamento_remocao"] += "Evitar o desbridamento."
+        self.tratamento["tratamento_terapia_topica"] += "Hidrogel com ou sem alginato; Acidos Graxos Essenciais (AGE)"
+        self.tratamento["tratamento_cobertura"] += "Hidrofibra com prata ou Alginato de cálcio"
+
+    @Rule(DataInput(tipo_lesao="arterial", tipo_tecido = "granulacao"))
+    def se_lesao_arterial_tipo_de_tecido_granulacao(self):
+        self.tratamento["tratamento_remocao"] += "Manter o meio úmido e proteção. Realizar o desbridamento com critérios. Evitar o desbridamento instrumental."
+        self.tratamento["tratamento_terapia_topica"] += "Acidos Graxos Essenciais (AGE)"
+        self.tratamento["tratamento_cobertura"] += "Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
+
+    @Rule(DataInput(tipo_lesao="arterial", tipo_tecido = "epitelizacao" ))
+    def se_lesao_arterial_tipo_de_tecido_epitelizacao(self):
+        self.tratamento["tratamento_remocao"] += "Proteger. Realizar o desbridamento com critérios. Evitar o desbridamento instrumental."
+        self.tratamento["tratamento_terapia_topica"] += "Acidos Graxos Essenciais (AGE)"
+        self.tratamento["tratamento_cobertura"] += "Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
+
+    @Rule(DataInput(tipo_lesao="arterial", tipo_tecido=L("epitelizacao") | L("granulacao"), volume_exsudato=L("leve") | L("leve/pouco") | L("pouco")))
+    def se_lesao_arterial_tipo_tecido_epitelizacao_ou_granulacao_volume_exsudado_leve(self):
+        self.tratamento["tratamento_terapia_topica"] += "ou Hidrogel."
+
+    @Rule(DataInput(tipo_lesao="arterial", tipo_tecido=L("esfacelo") | L("necrotico"), volume_exsudato=L("leve") | L("leve/pouco") | L("pouco")))
+    def se_lesao_arterial_tipo_tecido_esfacelo_ou_necrotico_volume_exsudado_leve(self):
+        self.tratamento["tratamento_cobertura"] += " e Tela de poliuretano com camada de silicone ou Membrana de bicelulose."
+
+    @Rule(DataInput(tipo_lesao="arterial", volume_exsudato=L("pouco/moderado") | L("moderado")))
+    def se_lesao_arterial_volume_exsudado_moderado(self):
+        self.tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica"
+        self.tratamento["tratamento_cobertura"] += " Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata. Considerar Infecção (Erisipela e Celulite Infecciosa) - Encaminhar para atendimento médico."
+
+    @Rule(DataInput(tipo_lesao="arterial", volume_exsudato=L("moderado/intenso") | L("intenso")))
+    def se_lesao_arterial_volume_exsudado_intenso(self):
+        self.tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica"
+        self.tratamento["tratamento_cobertura"] += " Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata. Considerar Infecção (Erisipela e Celulite Infecciosa) - Encaminhar para atendimento médico."
+    
+    @Rule(DataInput(tipo_lesao="arterial", itb= BETWEEN(0.5, 0.89)))
+    def se_lesao_arterial_itb_entre_05_089(self):
+        self.tratamento["tratamento_remocao"] += " Tratamento adjuvante: Compressão deve ser usada com precaução."
+
+    @Rule(DataInput(tipo_lesao="arterial", itb= LT(0.5)))
+    def se_lesao_arterial_itb_menor_que_05(self):
+        self.tratamento["tratamento_remocao"] += " Tratamento adjuvante: Contraindicado Qualquer forma de Terapia compressiva. Encaminhar URGENTE ao vascular."
     
 def avaliacao(aspecto_pele, aspecto_unha, bordas, claudicacao, comorbidade, dor, dor_em_elevacao,
                      edema, enchimento_capilar, exsudato, exsudato_volume, idade, itb,                  
                      condicoes_clinicas_associadas, doppler, estilo_de_vida, etnia, pilificacao,
                      profundidade, pulso, sexo, tamanho_lesao, temperatura, localizacao):
-    engine = Decisao()
-    engine.reset()
     if itb == None:
         itb = 0.99
+    engine = Decisao()
+    engine.reset()
     engine.declare(DataInput(aspecto_pele=aspecto_pele, aspecto_unha=aspecto_unha, bordas=bordas, claudicacao=claudicacao, 
                              comorbidade=comorbidade, dor=dor, dor_em_elevacao=dor_em_elevacao, edema = edema,
                              enchimento_capilar = enchimento_capilar, exsudato = exsudato, exsudato_volume = exsudato_volume, 
@@ -409,84 +517,10 @@ def get_avaliacao_tipo(avaliacao):
 
 
 def avaliacao_tratamento(tipo_tecido, volume_exusdato, itb, tipo_lesao):
-    tratamento = {"tratamento_remocao": "",
-                  "tratamento_terapia_topica": "",
-                  "tratamento_cobertura": "",
-                  "tratamento_adjuvante": ""}
-    if tipo_lesao == "venosa":
-
-        if tipo_tecido == "esfacelo" or tipo_tecido == "necrotico":
-            tratamento["tratamento_remocao"] += "Desbridamento Autolítico ou Enzimatico ou Mecânico. Com instrumentais cortantes como bisturi e tesoura."
-            tratamento["tratamento_terapia_topica"] += "Desbridamento e Terapia Tópica Autolítica (Hidrogel com ou sem alginato ou Hidrocolóides ou Hidrofibra ou Iodo cadexômero); Enzimatico (Colagenase ou Papaína 6%, 10%, 20%); Mecânico (Hidrofibra ou irrigação com soro fisiológico em jato)"
-            tratamento["tratamento_cobertura"] += "Hidrofibra com prata ou Curativo carboximetilcelulose com prata"
-        
-        if tipo_tecido == "granulacao":
-            tratamento["tratamento_remocao"] += "Manter o meio úmido e proteção."
-            tratamento["tratamento_terapia_topica"] += "Hidrogel com o sem alginato Acidos Graxos Essenciais (AGE)"
-            tratamento["tratamento_cobertura"] += "Hidrocolóides ou Hidrofibra"
-
-        if tipo_tecido == "epitelizacao":
-            tratamento["tratamento_remocao"] += "Proteger."
-            tratamento["tratamento_terapia_topica"] += "Acidos Graxos Essenciais (AGE)"
-            tratamento["tratamento_cobertura"] += "Fibra de colágeno"
-
-        if volume_exusdato == "leve" or volume_exusdato == "leve/pouco" or volume_exusdato == "pouco":
-            if tipo_tecido == "epitelizacao":
-                tratamento["tratamento_terapia_topica"] += "ou Hidrogel."
-            if  not tipo_tecido == "granulacao":
-                tratamento["tratamento_cobertura"] += "ou Hidrocolóides."
-
-        if volume_exusdato == "pouco/moderado" or volume_exusdato == "moderado":
-            tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica."
-            if not tipo_tecido == "epitelizacao":
-                tratamento["tratamento_cobertura"] += " ou Alginato de cálcio."
-            else:
-                 tratamento["tratamento_cobertura"] += " ou Alginato de cálcio ou Hidrofibra."
-
-        if volume_exusdato == "moderado/intenso" or volume_exusdato == "intenso":
-            tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica."
-            tratamento["tratamento_cobertura"] += "Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata"
-
-        if itb !=None and itb >= 0.9 and itb < 1.3:
-            tratamento["tratamento_remocao"] += " Tratamento adjuvante: Bota de Unna; Terapia compressiva; Meias elásticas(20-30 mmHg); Elevação dos membros"
-        
-        if itb !=None and itb <= 0.9:
-            tratamento["tratamento_remocao"] += " Tratamento adjuvante: Contraindicado Terapia compressiva"
-        
-    if tipo_lesao == "arterial":
-
-        if tipo_tecido == "esfacelo" or tipo_tecido == "necrotico":
-            tratamento["tratamento_remocao"] += "Evitar o desbridamento."
-            tratamento["tratamento_terapia_topica"] += "Hidrogel com ou sem alginato; Acidos Graxos Essenciais (AGE)"
-            tratamento["tratamento_cobertura"] += "Hidrofibra com prata ou Alginato de cálcio"
-        
-        if tipo_tecido == "granulacao":
-            tratamento["tratamento_remocao"] += "Manter o meio úmido e proteção. Realizar o desbridamento com critérios. Evitar o desbridamento instrumental."
-            tratamento["tratamento_terapia_topica"] += "Acidos Graxos Essenciais (AGE)"
-            tratamento["tratamento_cobertura"] += "Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
-
-        if tipo_tecido == "epitelizacao":
-            tratamento["tratamento_remocao"] += "Proteger. Realizar o desbridamento com critérios. Evitar o desbridamento instrumental."
-            tratamento["tratamento_terapia_topica"] += "Acidos Graxos Essenciais (AGE)"
-            tratamento["tratamento_cobertura"] += "Tela de poliuretano com camada de silicone ou Membrana de bicelulose"
-
-        if volume_exusdato == "leve" or volume_exusdato == "leve/pouco" or volume_exusdato == "pouco":
-            if tipo_tecido == "granulacao" or tipo_tecido == "epitelizacao": 
-                tratamento["tratamento_terapia_topica"] += " ou Hidrogel."
-            if tipo_tecido == "esfacelo" or tipo_tecido == "necrotico":
-                tratamento["tratamento_cobertura"] += " e Tela de poliuretano com camada de silicone ou Membrana de bicelulose."
-
-        if volume_exusdato == "pouco/moderado" or volume_exusdato == "moderado":
-            tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica"
-            tratamento["tratamento_cobertura"] += " Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata. Considerar Infecção (Erisipela e Celulite Infecciosa) - Encaminhar para atendimento médico."
-
-        if volume_exusdato == "moderado/intenso" or volume_exusdato == "intenso":
-            tratamento["tratamento_terapia_topica"] = "Não utilizar terapia tópica"
-            tratamento["tratamento_cobertura"] += " Espuma de poliuretano ou Espuma hidrocelular ou Alginato de cálcio ou Carvão ativado ou Curativo carboximetilcelulose com prata. Considerar Infecção (Erisipela e Celulite Infecciosa) - Encaminhar para atendimento médico."
-
-        if itb !=None and itb < 0.5:
-            tratamento["tratamento_remocao"] += " Tratamento adjuvante: Contraindicado Qualquer forma de Terapia compressiva. Encaminhar URGENTE ao vascular."
-        
-        if itb !=None and itb <= 0.89:
-            tratamento["tratamento_remocao"] += " Tratamento adjuvante: Compressão deve ser usada com precaução."
-    return tratamento
+    if itb == None:
+        itb = 0.99
+    engine = DecisaoTratamento()
+    engine.reset()
+    engine.declare(DataInput(tipo_lesao=tipo_lesao, volume_exusdato=volume_exusdato, itb=itb,tipo_tecido=tipo_tecido))
+    engine.run()
+    return engine.tratamento

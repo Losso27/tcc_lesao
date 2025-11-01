@@ -1,5 +1,6 @@
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
+import re
 
 
 def convert_string_to_boolean(string):
@@ -14,4 +15,7 @@ def convert_string_to_age(string):
     return relativedelta(now, date).years
 
 def convert_string_to_float(string):
-    return float(string.replace(".","").replace(",","."))
+    if re.match('[a-zA-Z]', string):
+        return None
+    string = string.replace(".","").replace(",",".")
+    return float(string)
