@@ -22,7 +22,6 @@ def require_token(f):
 
 # Create an item
 @pacientes.route('/', methods=['POST'])
-@require_token
 def create_item():
     data = request.get_json()
 
