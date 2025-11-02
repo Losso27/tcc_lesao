@@ -21,10 +21,9 @@ def require_token(f):
     return decorated
 
 # Create an item
-@pacientes.route('/', methods=['POST'])
+@pacientes.route('/create', methods=['POST'])
 def create_item():
     data = request.get_json()
-
     aspecto_pele = data["aspecto_pele"]                 
     aspecto_unha = data["aspecto_unha"]                
     bordas = data["bordas"]                      
