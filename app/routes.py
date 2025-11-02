@@ -138,3 +138,9 @@ def get_pdf(item_id):
 def get_item(item_id):
     item = Paciente.query.where(Paciente.cod_sus == item_id).order_by(desc(Paciente.data_exame)).first_or_404()
     return jsonify(item.to_dict()), 200
+
+
+@pacientes.route('/discovery', methods=['POST'])
+def discovery_json():
+    print(request.data)
+    return request.get_json(), 200
