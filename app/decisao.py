@@ -347,11 +347,11 @@ class Decisao(KnowledgeEngine):
     def se_dor_intensa(self):
         self.riscos["risco_alto_arterial"] += 0.0583
 
-    @Rule(DataInput(dor_em_elevacao = "aumento"))
+    @Rule(DataInput(dor_em_elevacao = True))
     def se_dor_em_elevacao_aumento(self):
         self.riscos["risco_moderado_arterial"] += 0.0583
 
-    @Rule(DataInput(dor_em_elevacao = "alivio"))
+    @Rule(DataInput(dor_em_elevacao = False))
     def se_dor_em_elevacao_alivio(self):
         self.riscos["risco_baixo_venoso"] += 0.05
 

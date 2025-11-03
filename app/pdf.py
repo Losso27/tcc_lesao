@@ -20,12 +20,12 @@ def create_pdf(data):
     aspecto_pele = paciente["aspecto_pele"].title()             
     aspecto_unha = paciente["aspecto_unha"].title()            
     bordas = paciente["bordas"].title()                    
-    claudicacao = paciente["claudicacao"]
+    claudicacao = translator_boolean(paciente["claudicacao"])
     condicoes_clinicas_associadas = translator(paciente["condicoes_clinicas_associadas"], dict_condicoes)
     comorbidade = translator(paciente["comorbidade"], dict_comorbidade)                  
     doppler = translator(paciente["doppler"], dict_doppler)                     
     dor = paciente["dor"].title()                          
-    dor_em_elevacao = paciente['dor_em_elevacao'].title()             
+    dor_em_elevacao = translator_boolean(paciente['dor_em_elevacao'])             
     edema = paciente["edema"]
     estilo_de_vida = translator(paciente["estilo_de_vida"], dict_estilo_vida)
     etnia = translator(paciente["etnia"], dict_etinia)         
@@ -149,4 +149,10 @@ def translator(source, dict):
         if i != None:
             output += dict[i] + ", "
     return output[:-2]
+
+def translator_boolean(source):
+    if source:
+        return "Sim"
+    else:
+        return "Não"
 

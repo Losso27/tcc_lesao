@@ -12,7 +12,7 @@ class Paciente(db.Model):
     claudicacao                     = db.Column(db.Boolean)                 
     comorbidade                     = db.Column(ARRAY(db.Integer))            
     dor                             = db.Column(db.String(255))
-    dor_em_elevacao                 = db.Column(db.String(255))
+    dor_em_elevacao                 = db.Column(db.Boolean)
     edema                           = db.Column(db.Integer)                  
     enchimento_capilar              = db.Column(db.String(255))
     exsudato                        = db.Column(db.Integer)
