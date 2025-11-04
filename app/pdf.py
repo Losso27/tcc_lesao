@@ -75,7 +75,10 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Cartão SUS: {cod_sus}",border=1, ln=True)
 
     pdf.cell(half_width, 10, f"Idade: {idade}", border=1)
-    pdf.cell(half_width, 10, f"Data de Nascimento: {data_nascimento:%d/%m/%Y}", border=1, ln=True)
+    if data_nascimento != None:
+        pdf.cell(half_width, 10, f"Data de Nascimento: {data_nascimento:%d/%m/%Y}", border=1, ln=True)
+    else:
+        pdf.cell(half_width, 10, f"Data de Nascimento: ", border=1, ln=True)
 
     pdf.cell(half_width, 10, f"Tipo da Lesão: {tipo}", border=1)
     pdf.cell(half_width, 10, f"Risco: {risco}", border=1, ln=True)
