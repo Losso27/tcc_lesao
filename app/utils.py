@@ -9,8 +9,10 @@ def convert_string_to_boolean(string):
     else:
         return False
     
-def convert_string_to_age(string):
-    date = datetime.strptime(string, "%b %d, %Y %I:%M %p")
+def convert_string_to_date(string):
+    return datetime.strptime(string, "%b %d, %Y %I:%M %p")
+
+def convert_date_to_age(date):
     now = datetime.now()
     return relativedelta(now, date).years
 

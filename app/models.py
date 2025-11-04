@@ -54,6 +54,7 @@ class Paciente(db.Model):
     tratamento_adjuvante            = db.Column(db.Text)
     dor_num                         = db.Column(db.Float)
     exsudato_volume_num             = db.Column(db.Float)
+    data_nascimento                 = db.Column(TIMESTAMP)
 
 
     def __repr__(self):
@@ -132,5 +133,7 @@ class Paciente(db.Model):
             "tratamento_cobertura": self.tratamento_cobertura,          
             "tratamento_adjuvante": self.tratamento_adjuvante,
             "dor_num" : self.dor_num,
-            "exsudato_volume_num": self.exsudato_volume_num    
+            "exsudato_volume_num": self.exsudato_volume_num,
+            "data_nascimento": self.data_nascimento,
+            "cod_sus": self.cod_sus
         }

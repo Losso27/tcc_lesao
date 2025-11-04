@@ -5,7 +5,7 @@ from sqlalchemy import desc
 from .pdf import create_pdf
 import io
 from .fuzzy import Fuzzy
-from .utils import convert_string_to_age, convert_string_to_boolean, convert_string_to_float
+from .utils import convert_string_to_date, convert_string_to_boolean, convert_string_to_float, convert_date_to_age
 from datetime import datetime
 from .extensions import db
 from functools import wraps
@@ -39,8 +39,9 @@ def create_item():
     etnia = data["etnia"]                       
     enchimento_capilar = data["enchimento_capilar"]           
     exsudato = data["exsudato"]                     
-    exsudato_volume_num = convert_string_to_float(data["exsudato_volume"])            
-    idade = convert_string_to_age(data["data_nascimento"])            
+    exsudato_volume_num = convert_string_to_float(data["exsudato_volume"])
+    data_nascimento = convert_string_to_date(data["data_nascimento"])       
+    idade = convert_date_to_age(data_nascimento)            
     localizacao = data["localizacao"].split(", ")              
     pilificacao = data["pilificacao"]                  
     profundidade = data ["profundidade"]                
@@ -115,7 +116,8 @@ def create_item():
         tratamento_cobertura = tratamento["tratamento_cobertura"],
         tratamento_adjuvante = tratamento["tratamento_adjuvante"],
         dor_num = dor_num,
-        exsudato_volume_num = exsudato_volume_num
+        exsudato_volume_num = exsudato_volume_num,
+        data_nascimento = data_nascimento
     )
     db.session.add(new_paciente)
     db.session.commit()

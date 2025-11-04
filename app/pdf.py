@@ -47,6 +47,8 @@ def create_pdf(data):
     altura = paciente["altura"]
     imc = peso / altura ** 2
     nome = paciente["nome"].title()
+    data_nascimento = paciente["data_nascimento"]
+    cod_sus = paciente["cod_sus"]
 
     if itb == None:
         itb = ""
@@ -70,7 +72,10 @@ def create_pdf(data):
     pdf.set_font("Helvetica", "", 12)
 
     pdf.cell(half_width, 10, f"Nome: {nome}", border=1)
-    pdf.cell(half_width, 10, f"Idade: {idade}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Cartão SUS: {cod_sus}",border=1, ln=True)
+
+    pdf.cell(half_width, 10, f"Idade: {idade}", border=1)
+    pdf.cell(half_width, 10, f"Data de Nascimento: {data_nascimento:%d/%m/%Y}", border=1, ln=True)
 
     pdf.cell(half_width, 10, f"Tipo da Lesão: {tipo}", border=1)
     pdf.cell(half_width, 10, f"Risco: {risco}", border=1, ln=True)
