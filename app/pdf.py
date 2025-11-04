@@ -10,7 +10,7 @@ dict_exsudato = {24: "Seroso", 25: "Purulento", 26:"Sanguinolento", 27:"Sero-san
 class CustomPDF(FPDF):
     def header(self):
         self.set_font("Helvetica", "B", 18)
-        self.cell(0, 10, "Prontuario", border=1, ln=True, align="C")
+        self.cell(0, 10, "Prontuário", border=1, ln=True, align="C")
         self.ln(5)
     
 
@@ -84,7 +84,7 @@ def create_pdf(data):
     pdf.ln(0)
 
     pdf.cell(half_width, 10, f"Aspecto da pele: {aspecto_pele}", border=1)
-    pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao} cm²", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao:.2f} cm²", border=1, ln=True)
 
     # Row 2
     pdf.cell(half_width, 10, f"Profundidade da Lesão: {profundidade}", border=1)
@@ -126,7 +126,7 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Peso: {peso:.1f} Kg", border=1)
     pdf.cell(half_width, 10, f"Altura: {altura:.2f} m", border=1, ln=True)
 
-    pdf.multi_cell(page_width, 10, f"IMC: {imc:.2f} Kg/m²", border=1)
+    pdf.multi_cell(page_width, 10, f"IMC: {imc:.2f} Kg/m² ({translator_imc(imc)})", border=1)
     pdf.ln(0)
 
     pdf.multi_cell(page_width, 10, f"Histórico Tratamento:")
@@ -156,3 +156,16 @@ def translator_boolean(source):
     else:
         return "Não"
 
+def translator_imc(imc):
+    if imc < 18.5:
+        return "Baixo Peso"
+    elif imc >= 18.5 and imc < 25:
+        return "Peso Normal"
+    elif imc >= 25 and imc < 30:
+        return "Pré-obesidade"
+    elif imc >= 30 and imc < 35:
+        return "Obesidade Grau I"
+    elif imc >= 35 and imc < 40:
+        return "Obesidade Grau II"
+    elif imc >= 40:
+        return "Obesidade Grau III"
