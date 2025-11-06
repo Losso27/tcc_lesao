@@ -34,12 +34,14 @@ def create_pdf(data):
     exsudato_volume = paciente["exsudato_volume"].title()         
     idade = paciente["idade"]
     itb = paciente["itb"]                   
-    localizacao = ",".join(paciente["localizacao"])          
+    localizacao = ",".join(paciente["localizacao"]).title()       
     pilificacao = paciente["pilificacao"].title()            
     profundidade = paciente ["profundidade"].title()
     pulso = paciente["pulso"].title()                               
-    sexo = paciente["sexo"].title()                        
-    tamanho_lesao = paciente["comprimento_lesao"] * paciente["largura_lesao"]       
+    sexo = paciente["sexo"].title()
+    comprimento_lesao = paciente["comprimento_lesao"]
+    largura_lesao = paciente["largura_lesao"]
+    tamanho_lesao = comprimento_lesao * largura_lesao
     temperatura = paciente["temperatura"].title()
     tipo = paciente["tipo"]
     risco = paciente["risco"]
@@ -91,6 +93,9 @@ def create_pdf(data):
     pdf.multi_cell(half_width * 2, 10, f"Localização da Lesão: {localizacao}", border=1)
     pdf.ln(0)
 
+    pdf.cell(half_width, 10, f"Comprimento da Lesão: {largura_lesao:.2f} cm", border=1)
+    pdf.cell(half_width, 10, f"Largura da Lesão: {comprimento_lesao:.2f} cm", border=1, ln=True)
+
     pdf.cell(half_width, 10, f"Aspecto da pele: {aspecto_pele}", border=1)
     pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao:.2f} cm²", border=1, ln=True)
 
@@ -99,12 +104,12 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Bordas da Lesão: {bordas}", border=1, ln=True)
 
     # Row 3
-    pdf.cell(half_width, 10, f"Dor na elevação: {dor_em_elevacao}", border=1)
-    pdf.cell(half_width, 10, f"Intensidade da dor {dor}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Dor na Elevação: {dor_em_elevacao}", border=1)
+    pdf.cell(half_width, 10, f"Intensidade da Dor: {dor}", border=1, ln=True)
 
     # Row 4
     pdf.cell(half_width, 10, f"Aspecto Exsudato: {exsudato}", border=1)
-    pdf.cell(half_width, 10, f"Volume Exsudato {exsudato_volume}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Volume Exsudato: {exsudato_volume}", border=1, ln=True)
 
     # Row 5
     pdf.cell(half_width, 10, f"Edema: {edema}", border=1)
