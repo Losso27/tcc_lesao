@@ -51,6 +51,7 @@ def create_pdf(data):
     nome = paciente["nome"].title()
     data_nascimento = paciente["data_nascimento"]
     cod_sus = paciente["cod_sus"]
+    data_primeiro_atendimento = data[-1].to_dict()["data_exame"]
 
     if itb == None:
         itb = ""
@@ -82,14 +83,18 @@ def create_pdf(data):
     else:
         pdf.cell(half_width, 10, f"Data de Nascimento: ", border=1, ln=True)
 
-    pdf.cell(half_width, 10, f"Tipo da Lesão: {tipo}", border=1)
-    pdf.cell(half_width, 10, f"Risco: {risco}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Peso: {peso:.1f} Kg", border=1)
+    pdf.cell(half_width, 10, f"Altura: {altura:.2f} m", border=1, ln=True)
+
+    pdf.cell(half_width, 10, f"IMC: {imc:.2f} Kg/m² ({translator_imc(imc)})", border=1)
+    pdf.cell(half_width, 10, f"Data primeiro atendimento: {data_primeiro_atendimento:%d/%m/%Y}", border=1, ln=True)
 
     pdf.cell(half_width, 10, f"Sexo: {sexo}", border=1,)
     pdf.cell(half_width, 10, f"Etnia: {etnia}", border=1, ln=True)
-    
 
-    # Row 1
+    pdf.cell(half_width, 10, f"Tipo da Lesão: {tipo}", border=1)
+    pdf.cell(half_width, 10, f"Risco: {risco}", border=1, ln=True)
+    
     pdf.multi_cell(half_width * 2, 10, f"Localização da Lesão: {localizacao}", border=1)
     pdf.ln(0)
 
@@ -99,19 +104,15 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Aspecto da pele: {aspecto_pele}", border=1)
     pdf.cell(half_width, 10, f"Dimensão da Lesão: {tamanho_lesao:.2f} cm²", border=1, ln=True)
 
-    # Row 2
     pdf.cell(half_width, 10, f"Profundidade da Lesão: {profundidade}", border=1)
     pdf.cell(half_width, 10, f"Bordas da Lesão: {bordas}", border=1, ln=True)
 
-    # Row 3
     pdf.cell(half_width, 10, f"Dor na Elevação: {dor_em_elevacao}", border=1)
     pdf.cell(half_width, 10, f"Intensidade da Dor: {dor}", border=1, ln=True)
 
-    # Row 4
     pdf.cell(half_width, 10, f"Aspecto Exsudato: {exsudato}", border=1)
     pdf.cell(half_width, 10, f"Volume Exsudato: {exsudato_volume}", border=1, ln=True)
 
-    # Row 5
     pdf.cell(half_width, 10, f"Edema: {edema}", border=1)
     pdf.cell(half_width, 10, f"Temperatura: {temperatura}", border=1, ln=True)
 
@@ -136,12 +137,6 @@ def create_pdf(data):
     pdf.multi_cell(page_width, 10, f"Doppler: {doppler}", border=1)
     pdf.ln(0)
 
-    pdf.cell(half_width, 10, f"Peso: {peso:.1f} Kg", border=1)
-    pdf.cell(half_width, 10, f"Altura: {altura:.2f} m", border=1, ln=True)
-
-    pdf.multi_cell(page_width, 10, f"IMC: {imc:.2f} Kg/m² ({translator_imc(imc)})", border=1)
-    pdf.ln(0)
-
     pdf.multi_cell(page_width, 10, f"Histórico Tratamento:")
     pdf.ln(0)
     for p in data:
@@ -159,7 +154,7 @@ def create_pdf(data):
 def translator(source, dict):
     output = ""
     for i in source:
-        if i != None:
+        if i in dict and i != None:
             output += dict[i] + ", "
     return output[:-2]
 
