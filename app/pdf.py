@@ -51,6 +51,8 @@ def create_pdf(data):
     nome = paciente["nome"].title()
     data_nascimento = paciente["data_nascimento"]
     cod_sus = paciente["cod_sus"]
+    probabilidade_tipo = paciente["probabilidade"]
+    probabilidade_risco = paciente["probabilidade_risco"]
     data_primeiro_atendimento = data[-1].to_dict()["data_exame"]
 
     if itb == None:
@@ -92,8 +94,8 @@ def create_pdf(data):
     pdf.cell(half_width, 10, f"Sexo: {sexo}", border=1,)
     pdf.cell(half_width, 10, f"Etnia: {etnia}", border=1, ln=True)
 
-    pdf.cell(half_width, 10, f"Tipo da Lesão: {tipo}", border=1)
-    pdf.cell(half_width, 10, f"Risco: {risco}", border=1, ln=True)
+    pdf.cell(half_width, 10, f"Tipo da Lesão: {tipo} ({probabilidade_tipo * 100}%)", border=1)
+    pdf.cell(half_width, 10, f"Risco: {risco} ({probabilidade_risco * 100}%)", border=1, ln=True)
     
     pdf.multi_cell(half_width * 2, 10, f"Localização da Lesão: {localizacao}", border=1)
     pdf.ln(0)
